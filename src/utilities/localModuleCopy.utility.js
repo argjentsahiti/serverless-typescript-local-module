@@ -37,8 +37,7 @@ class LocalModuleCopyUtility {
       sourceDir = path.join(this.moduleDirectory, tsConfig.compilerOptions.outDir);
     }
 
-    const destDir = path.join(this.serviceDirectory, 'node_modules', this.name);
-
+    const destDir = path.join(this.serviceDirectory, '.build', 'node_modules', this.name);
     fs.removeSync(destDir);
     fs.ensureDirSync(destDir);
     fs.copySync(sourceDir, destDir);

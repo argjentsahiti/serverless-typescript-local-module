@@ -1,7 +1,11 @@
 {
   "name": "serverless-typescript-local-module",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.2",
+  "description": "A serverless framework plugin for serverless-plugin-typescript to support local installed modules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/argjentsahiti/serverless-typescript-local-module"
+  },
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,5 +18,12 @@
   "devDependencies": {
     "prettier": "3.0.0",
     "serverless": "3.33.0"
-  }
+  },
+  "keywords": [
+    "serverless",
+    "typescript",
+    "serverless plugin",
+    "serverless-plugin-typescript",
+    "local node modules"
+  ]
 }

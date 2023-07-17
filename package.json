@@ -1,6 +1,6 @@
 {
   "name": "serverless-typescript-local-module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A serverless framework plugin for serverless-plugin-typescript to support local installed modules",
   "repository": {
     "type": "git",

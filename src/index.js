@@ -1,12 +1,14 @@
 const PluginConfigValidator = require('./validators/pluginConfig.validator');
 const path = require('path');
 const { Worker } = require('worker_threads');
+const fs = require('fs-extra')
 
 class ServerlessTypescriptLocalModule {
   constructor(serverless) {
     this.serverless = serverless;
     this.hooks = {
       'before:package:createDeploymentArtifacts': this.beforeCreateArtifact.bind(this),
+      'deploy:finalize': this.cleanup.bind(this)
     };
   }
 
@@ -63,6 +65,25 @@ class ServerlessTypescriptLocalModule {
         reject(new Error(`Copy node modules script stopped with exit code ${code}`));
       });
     });
+  }
+
+  cleanup() {
+    const service = this.serverless.service;
+    const localDependencies = service.custom['serverlessTypescriptLocalModule'];
+
+    localDependencies.forEach((localDependency) => {
+      if(localDependency.isTypescriptModule) {
+        const modulePath = path.normalize(process.env.PWD + '/' + localDependency.path);
+        const tsConfigFile = localDependency.tsConfigFile
+          ? localDependency.tsConfigFile
+          : 'tsconfig.json';
+
+        const tsConfig = require(path.join(modulePath, tsConfigFile));
+        const buildDirectory =  path.join(modulePath, tsConfig.compilerOptions.outDir);
+
+        fs.removeSync(buildDirectory)
+      }
+    })
   }
 }
 

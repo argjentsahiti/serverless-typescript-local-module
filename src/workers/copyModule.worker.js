@@ -9,6 +9,7 @@ function copyLocalModule(data) {
     data.isTypescriptModule,
     data.buildCommand,
     data.tsConfigFile,
+    data.skipBuildForTs
   ).copy();
 
   process.exit(0);

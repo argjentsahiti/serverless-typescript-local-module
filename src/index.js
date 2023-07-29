@@ -32,6 +32,7 @@ class ServerlessTypescriptLocalModule {
           !!localDependency.isTypescriptModule,
           tsConfigFile,
           buildCommand,
+          !!localDependency.skipBuildForTs
         );
       }),
     );
@@ -44,6 +45,7 @@ class ServerlessTypescriptLocalModule {
     isTypescriptModule,
     tsConfigFile,
     buildCommand,
+    skipBuildForTs = false
   ) {
     return new Promise((resolve, reject) => {
       const data = {
@@ -53,6 +55,7 @@ class ServerlessTypescriptLocalModule {
         isTypescriptModule,
         tsConfigFile,
         buildCommand,
+        skipBuildForTs,
       };
       const worker = new Worker(path.join(__dirname, '/workers/copyModule.worker.js'), {
         workerData: data,

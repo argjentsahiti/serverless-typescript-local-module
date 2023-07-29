@@ -10,6 +10,7 @@ class LocalModuleCopyUtility {
     isTypescriptModule,
     buildCommand,
     tsConfigFile,
+    skipBuildForTs = false
   ) {
     if (!fs.existsSync(moduleDirectory)) {
       throw new Error('Invalid moduleDirectory directory');
@@ -25,15 +26,21 @@ class LocalModuleCopyUtility {
     this.isTypescriptModule = isTypescriptModule;
     this.buildCommand = buildCommand;
     this.tsConfigFile = tsConfigFile;
+    this.skipBuildForTs = skipBuildForTs
   }
 
   copy = () => {
     let sourceDir = this.moduleDirectory;
 
     if (this.isTypescriptModule) {
-      const npmScriptRunner = new NpmScriptRunner(this.moduleDirectory);
+
       const tsConfig = require(path.join(this.moduleDirectory, this.tsConfigFile));
-      npmScriptRunner.run(this.buildCommand);
+
+      if(!this.skipBuildForTs) {
+        const npmScriptRunner = new NpmScriptRunner(this.moduleDirectory);
+        npmScriptRunner.run(this.buildCommand);
+      }
+
       sourceDir = path.join(this.moduleDirectory, tsConfig.compilerOptions.outDir);
     }
 

@@ -10,7 +10,8 @@ class LocalModuleCopyUtility {
     isTypescriptModule,
     buildCommand,
     tsConfigFile,
-    skipBuildForTs = false
+    skipBuildForTs = false,
+    packager = 'npm',
   ) {
     if (!fs.existsSync(moduleDirectory)) {
       throw new Error('Invalid moduleDirectory directory');
@@ -26,17 +27,21 @@ class LocalModuleCopyUtility {
     this.isTypescriptModule = isTypescriptModule;
     this.buildCommand = buildCommand;
     this.tsConfigFile = tsConfigFile;
-    this.skipBuildForTs = skipBuildForTs
+    this.skipBuildForTs = skipBuildForTs;
+    this.packager = packager;
+    this.npmRemoveDevDependencies = {
+      npm: 'npm prune --omit=dev',
+      pnpm: 'pnpm prune --prod',
+    };
   }
 
   copy = () => {
     let sourceDir = this.moduleDirectory;
 
     if (this.isTypescriptModule) {
-
       const tsConfig = require(path.join(this.moduleDirectory, this.tsConfigFile));
 
-      if(!this.skipBuildForTs) {
+      if (!this.skipBuildForTs) {
         const npmScriptRunner = new NpmScriptRunner(this.moduleDirectory);
         npmScriptRunner.run(this.buildCommand);
       }
@@ -52,7 +57,7 @@ class LocalModuleCopyUtility {
     if (this.isTypescriptModule) {
       fs.copySync(
         path.join(this.moduleDirectory, 'node_modules'),
-        path.join(sourceDir, 'node_modules'),
+        path.join(destDir, 'node_modules'),
         {
           dereference: true,
         },
@@ -63,7 +68,7 @@ class LocalModuleCopyUtility {
         path.join(destDir, 'package.json'),
       );
     }
-    execSync('npm prune --omit=dev', { cwd: destDir });
+    execSync(this.npmRemoveDevDependencies[this.packager], { cwd: destDir });
   };
 }
 
